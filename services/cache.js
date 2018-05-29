@@ -26,6 +26,7 @@ mongoose.Query.prototype.exec = async function() {
   const cacheValue = await client.hget(this.hashKey, key)
 
   if (cacheValue) {
+    console.log('cache')
     const doc = JSON.parse(cacheValue)
 
     return Array.isArray(doc)
@@ -34,6 +35,7 @@ mongoose.Query.prototype.exec = async function() {
   }
 
   const result = await exec.apply(this, arguments)
+  console.log('database')
   client.hset(this.hashKey, key, JSON.stringify(result), 'EX', 10)
   return result
 }
